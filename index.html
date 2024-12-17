@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Harvest Organic Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script src="https://unpkg.com/lucide-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'organic-green': '#4caf50',
+                        'organic-light-green': '#81c784',
+                        'organic-dark-green': '#2e7d32'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="harvest.png" alt="Green Harvest Logo" class="h-10 w-10 rounded-full">
+                <h1 class="text-2xl font-bold text-organic-green">Green Harvest</h1>
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-800 hover:text-organic-green transition">Home</a>
+                <a href="#products" class="text-gray-800 hover:text-organic-green transition">Products</a>
+                <a href="#about" class="text-gray-800 hover:text-organic-green transition">About</a>
+                <a href="#contact" class="text-gray-800 hover:text-organic-green transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="cart-button" class="relative">
+                    <i data-feather="shopping-cart" class="text-organic-green"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-organic-light-green text-white py-20">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-4">Fresh Organic Groceries</h2>
+            <p class="text-xl mb-8">Directly from local farmers to your table</p>
+            <a href="#products" class="bg-white text-organic-green px-6 py-3 rounded-full hover:bg-gray-100 transition">Shop Now</a>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-3xl font-bold text-center mb-12 text-organic-green">Our Fresh Organic Products</h3>
+            <div id="product-grid" class="grid grid-cols-4 gap-6">
+                <!-- Products will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="bg-gray-100 py-16">
+        <div class="max-w-6xl mx-auto flex items-center space-x-12">
+            <div class="w-1/2">
+                <img src="farmers.jpg" alt="Organic Farm" class="rounded-lg shadow-lg">
+            </div>
+            <div class="w-1/2">
+                <h3 class="text-3xl font-bold mb-6 text-organic-green">Our Story</h3>
+                <p class="text-gray-700 mb-4">
+                    Green Harvest started with a simple mission: bring the freshest, most sustainable organic produce directly from local farms to your kitchen.
+                </p>
+                <p class="text-gray-700 mb-6">
+                    We work directly with local farmers who share our commitment to organic, sustainable agriculture.
+                </p>
+                <a href="#" class="bg-organic-green text-white px-6 py-3 rounded-full hover:bg-organic-dark-green transition">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center">
+        <div class="bg-white rounded-lg w-96 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-2xl font-bold">Your Cart</h4>
+                <button id="close-cart" class="text-gray-500 hover:text-gray-800">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div id="cart-items" class="mb-4"></div>
+            <div class="flex justify-between items-center">
+                <span class="font-bold">Total:</span>
+                <span id="cart-total" class="font-bold">$0.00</span>
+            </div>
+            <button class="w-full bg-organic-green text-white py-3 rounded-full mt-4 hover:bg-organic-dark-green">Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+    { id: 1, name: 'Organic Apples', price: 4.99, image: 'OrganicApples.jpeg' },
+    { id: 2, name: 'Fresh Spinach', price: 3.49, image: 'spinach.jpg' },
+    { id: 3, name: 'Turmeric', price: 5.99, image: 'turmeric.webp' },
+    { id: 4, name: 'Local Honey', price: 7.99, image: 'honey.jpg' },
+    { id: 5, name: 'Organic Tomatoes', price: 3.99, image: 'tomato.jpg' },
+    { id: 6, name: 'Fresh Avocados', price: 6.49, image: 'avacado.webp' },
+    { id: 7, name: 'Organic Milk', price: 4.49, image: 'milk.webp' },
+    { id: 8, name: 'Quinoa', price: 5.49, image: 'quinova.jpg' }
+];
+
+
+        // Cart Management
+        let cart = [];
+        const productGrid = document.getElementById('product-grid');
+        const cartButton = document.getElementById('cart-button');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartButton = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const cartCount = document.getElementById('cart-count');
+
+        // Render Products
+        function renderProducts() {
+            productGrid.innerHTML = products.map(product => `
+                <div class="bg-white rounded-lg shadow-md p-4 text-center">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-md mb-4">
+                    <h4 class="font-bold text-lg mb-2">${product.name}</h4>
+                    <p class="text-organic-green font-semibold mb-4">$${product.price.toFixed(2)}</p>
+                    <button onclick="addToCart(${product.id})" class="w-full bg-organic-green text-white py-2 rounded-full hover:bg-organic-dark-green">Add to Cart</button>
+                </div>
+            `).join('');
+        }
+
+        // Add to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCart();
+        }
+
+        // Update Cart
+        function updateCart() {
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            cartItems.innerHTML = cart.map(item => `
+                <div class="flex justify-between items-center mb-2">
+                    <span>${item.name} x ${item.quantity}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            cartTotal.textContent = `$${cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}`;
+        }
+
+        // Cart Modal Toggle
+        cartButton.addEventListener('click', () => {
+            cartModal.classList.remove('hidden');
+            cartModal.classList.add('flex');
+        });
+
+        closeCartButton.addEventListener('click', () => {
+            cartModal.classList.remove('flex');
+            cartModal.classList.add('hidden');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            feather.replace();
+        });
+    </script>
+</body>
+</html>
